@@ -13,7 +13,10 @@ from app.schemas import (
     WeatherMeasurementUpdate,
 )
 
-router = APIRouter(prefix="/weather-measurements", tags=["weather"])
+router = APIRouter(
+    prefix="/weather-measurements",
+    tags=["Weather — hourly (temperature, humidity, …)"],
+)
 
 
 @router.post("", response_model=WeatherMeasurementOut, status_code=status.HTTP_201_CREATED)

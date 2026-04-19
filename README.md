@@ -65,17 +65,26 @@ For Minerva submission, export that document to **PDF** (e.g. save as `docs/api-
 - `PUT /cities/{city_id}`
 - `DELETE /cities/{city_id}`
 
-### Measurements
+### Air quality — measurements (pollutants, e.g. PM2.5)
 
 - `POST /measurements`
 - `GET /measurements` (supports `city_id`, `pollutant`, `start`, `end`)
 - `PUT /measurements/{measurement_id}`
 - `DELETE /measurements/{measurement_id}`
 
+### Weather — hourly (temperature, humidity, …)
+
+- `POST /weather-measurements`
+- `GET /weather-measurements`
+- `GET /weather-measurements/{weather_id}`
+- `PUT /weather-measurements/{weather_id}`
+- `DELETE /weather-measurements/{weather_id}`
+
 ### Analytics
 
 - `GET /analytics/city-comparison` (`city_ids`, `pollutant`, `start`, `end`)
 - `GET /analytics/anomalies` (`city_id`, `pollutant`, `start`, `end`, `threshold`)
+- `GET /analytics/daily-trend` (`city_id`, `metric`, `start`, `end`) — `metric` e.g. `pm25` or `temperature_c`
 
 ## 4. Import OpenAQ Data
 

@@ -162,7 +162,9 @@ Delete a city (cascades related measurements per ORM configuration).
 
 ---
 
-### 4.3 Air quality measurements (`/measurements`)
+### 4.3 Air quality — measurements (`/measurements`)
+
+Pollutant time series (e.g. PM2.5 from OpenAQ). Not the same as weather in §4.4.
 
 #### `POST /measurements`
 
@@ -232,9 +234,9 @@ Delete a measurement.
 
 ---
 
-### 4.4 Weather measurements (`/weather-measurements`)
+### 4.4 Weather — hourly (`/weather-measurements`)
 
-Hourly weather rows (e.g. imported from Open-Meteo). Unique per `(city_id, datetime_utc)`.
+Temperature, humidity, precipitation, wind (e.g. from Open-Meteo). Unique per `(city_id, datetime_utc)`. Use this for `metric=temperature_c` in daily trend.
 
 #### `POST /weather-measurements`
 

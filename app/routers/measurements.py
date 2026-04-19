@@ -8,7 +8,10 @@ from app.database import get_db
 from app.models import City, Measurement
 from app.schemas import MeasurementCreate, MeasurementOut, MeasurementUpdate
 
-router = APIRouter(prefix="/measurements", tags=["measurements"])
+router = APIRouter(
+    prefix="/measurements",
+    tags=["Air quality — measurements (pollutants)"],
+)
 
 
 @router.post("", response_model=MeasurementOut, status_code=status.HTTP_201_CREATED)
