@@ -43,6 +43,14 @@ Open docs:
 - Swagger UI: <http://127.0.0.1:8000/docs>
 - ReDoc: <http://127.0.0.1:8000/redoc>
 
+### API documentation (coursework PDF)
+
+Human-readable API reference (endpoints, parameters, JSON examples, status codes):
+
+- [docs/api-documentation.md](docs/api-documentation.md)
+
+For Minerva submission, export that document to **PDF** (e.g. save as `docs/api-documentation.pdf` in this repo, or print from your editor / browser). The coursework asks for a **PDF**; keep the Markdown as the editable source.
+
 ## 3. API Endpoints
 
 ### System
