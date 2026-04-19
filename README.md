@@ -51,6 +51,19 @@ Human-readable API reference (endpoints, parameters, JSON examples, status codes
 
 For Minerva submission, export that document to **PDF** (e.g. save as `docs/api-documentation.pdf` in this repo, or print from your editor / browser). The coursework asks for a **PDF**; keep the Markdown as the editable source.
 
+### Technical report (Word)
+
+Editable draft (fill in name, ID, deployment, GenAI details, then export to PDF for Minerva):
+
+- [docs/XJCO3011_Technical_Report.docx](docs/XJCO3011_Technical_Report.docx) — latest generated copy  
+- If that file is open in Word, regeneration writes: [docs/XJCO3011_Technical_Report_expanded.docx](docs/XJCO3011_Technical_Report_expanded.docx)
+
+To regenerate after editing the generator script:
+
+```bash
+python scripts/build_technical_report_docx.py
+```
+
 ## 3. API Endpoints
 
 ### System
