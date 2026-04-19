@@ -400,19 +400,3 @@ For `temperature_c`, data comes from `weather_measurements.temperature_c`. Other
 **Errors:** `400`, `404`
 
 ---
-
-## 5. Interactive documentation (development)
-
-When the server is running:
-
-- **Swagger UI:** `http://127.0.0.1:8000/docs`
-- **OpenAPI JSON:** `http://127.0.0.1:8000/openapi.json`
-
-For submission, export this Markdown file to **PDF** (see repository `README.md`) and keep content aligned with the live OpenAPI schema.
-
----
-
-## 6. References
-
-- FastAPI automatic OpenAPI: https://fastapi.tiangolo.com/features/generate-clients/
-- Course assessment brief: include dataset citations and GenAI declaration in the separate technical report as required.
