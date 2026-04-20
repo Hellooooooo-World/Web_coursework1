@@ -11,6 +11,16 @@ app = FastAPI(
 )
 
 
+@app.get("/", include_in_schema=False)
+def root() -> dict[str, str]:
+    return {
+        "message": "API is running. Visit /docs for Swagger UI or /redoc for ReDoc.",
+        "docs": "/docs",
+        "redoc": "/redoc",
+        "health": "/health",
+    }
+
+
 @app.on_event("startup")
 def on_startup() -> None:
     Base.metadata.create_all(bind=engine)
