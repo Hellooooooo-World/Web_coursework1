@@ -10,3 +10,4 @@ pytest
 passlib[bcrypt]
 bcrypt<4
 python-multipart
+itsdangerous
