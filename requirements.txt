@@ -7,3 +7,6 @@ python-dotenv
 httpx
 pandas
 pytest
+passlib[bcrypt]
+bcrypt<4
+python-multipart
