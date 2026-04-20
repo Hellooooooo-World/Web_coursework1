@@ -32,9 +32,13 @@ if not session_secret:
     # so all browsers must re-login after server restarts.
     session_secret = secrets.token_urlsafe(48)
 
+session_max_age_raw = os.getenv("SESSION_MAX_AGE_SECONDS", "").strip()
+session_max_age = int(session_max_age_raw) if session_max_age_raw else None
+
 app.add_middleware(
     SessionMiddleware,
     secret_key=session_secret,
+    max_age=session_max_age,
     same_site="lax",
     https_only=False,
 )
