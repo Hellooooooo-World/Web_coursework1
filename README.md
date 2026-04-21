@@ -1,21 +1,27 @@
 # Global Air Quality Anomaly & City Comparison API
 
-This project is a coursework-ready API built with FastAPI and SQLAlchemy.
-It supports:
+Coursework project API built with FastAPI + SQLAlchemy for air-quality and weather analysis across major cities.
 
-- City CRUD operations
-- Measurement CRUD operations
-- City comparison analytics
-- Air-quality anomaly detection (z-score based)
+## Core capabilities
 
-## 1. Setup
+- City-to-city comparison for pollutant levels
+- Anomaly detection using z-score
+- Daily trend analytics for pollutant and temperature metrics
+- Session-based authentication with sign-in/sign-up pages
 
-### Requirements
+## Technology stack
 
 - Python 3.11+
-- PostgreSQL (recommended for final submission)
+- FastAPI
+- SQLAlchemy
+- SQLite (default local database: `air_quality.db`)
+- Optional PostgreSQL via `DATABASE_URL`
 
-### Install
+---
+
+## 1) Setup
+
+### 1.1 Install dependencies
 
 ```bash
 python -m venv .venv
@@ -23,54 +29,45 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### Configure
+### 1.2 Environment configuration
 
-```bash
-copy .env.example .env
-```
+Create `.env` (or set platform environment variables) with at least:
 
-Set `DATABASE_URL` in `.env` to your PostgreSQL DSN.
-If `.env` is missing, the app uses local SQLite (`air_quality.db`) for quick start.
+- `DATABASE_URL` (optional; defaults to local SQLite)
+- `SESSION_SECRET` (recommended for production deployments)
+- `SESSION_MAX_AGE_SECONDS` (optional session expiry in seconds)
+- `BASIC_AUTH_USERNAME` / `BASIC_AUTH_PASSWORD` (initial admin account seed on startup; defaults to `admin/admin`)
 
-## 2. Run
+If `SESSION_SECRET` is not set, the app generates one at startup, so all users must re-login after every restart.
+
+### 1.3 Run the API
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Open docs:
+Main URLs:
 
-- Swagger UI: <http://127.0.0.1:8000/docs>
-- ReDoc: <http://127.0.0.1:8000/redoc>
+- App root: <http://127.0.0.1:8000/>
+- Swagger docs: <http://127.0.0.1:8000/docs>
+- Login page: <http://127.0.0.1:8000/login>
+- Sign-up page: <http://127.0.0.1:8000/signup>
 
-### API documentation (coursework PDF)
+---
 
-Human-readable API reference (endpoints, parameters, JSON examples, status codes):
+## 2) Authentication behavior
 
-- [docs/api-documentation.md](docs/api-documentation.md)
+- Unauthenticated requests to protected routes (including `/`, `/docs`, `/openapi.json`, and data endpoints) are redirected to `/login` or rejected with 401.
+- Users authenticate via form-based session login (`/login`).
+- New users can be created through `/signup`.
+- Logout endpoint: `POST /logout`.
+- A hidden programmatic endpoint exists for creating users: `POST /users` (not shown in Swagger UI).
 
-For Minerva submission, export that document to **PDF** (e.g. save as `docs/api-documentation.pdf` in this repo, or print from your editor / browser). The coursework asks for a **PDF**; keep the Markdown as the editable source.
+---
 
-### Technical report (Word)
+## 3) API endpoints
 
-Editable draft (fill in name, ID, deployment, GenAI details, then export to PDF for Minerva):
-
-- [docs/XJCO3011_Technical_Report.docx](docs/XJCO3011_Technical_Report.docx) — latest generated copy  
-- If that file is open in Word, regeneration writes: [docs/XJCO3011_Technical_Report_expanded.docx](docs/XJCO3011_Technical_Report_expanded.docx)
-
-To regenerate after editing the generator script:
-
-```bash
-python scripts/build_technical_report_docx.py
-```
-
-## 3. API Endpoints
-
-### System
-
-- `GET /health`
-
-### Cities
+### 3.1 Cities
 
 - `POST /cities`
 - `GET /cities`
@@ -78,63 +75,85 @@ python scripts/build_technical_report_docx.py
 - `PUT /cities/{city_id}`
 - `DELETE /cities/{city_id}`
 
-### Air quality — measurements (pollutants, e.g. PM2.5)
+### 3.2 Air quality measurements
 
 - `POST /measurements`
-- `GET /measurements` (supports `city_id`, `pollutant`, `start`, `end`)
+- `GET /measurements` (filters: `city_id`, `pollutant`, `start`, `end`, paging)
 - `PUT /measurements/{measurement_id}`
 - `DELETE /measurements/{measurement_id}`
 
-### Weather — hourly (temperature, humidity, …)
+### 3.3 Weather measurements
 
 - `POST /weather-measurements`
-- `GET /weather-measurements`
+- `GET /weather-measurements` (filters: `city_id`, `start`, `end`, paging)
 - `GET /weather-measurements/{weather_id}`
 - `PUT /weather-measurements/{weather_id}`
 - `DELETE /weather-measurements/{weather_id}`
 
-### Analytics
+### 3.4 Analytics
 
 - `GET /analytics/city-comparison` (`city_ids`, `pollutant`, `start`, `end`)
 - `GET /analytics/anomalies` (`city_id`, `pollutant`, `start`, `end`, `threshold`)
-- `GET /analytics/daily-trend` (`city_id`, `metric`, `start`, `end`) — `metric` e.g. `pm25` or `temperature_c`
+- `GET /analytics/daily-trend` (`city_id`, `metric`, `start`, `end`)
+  - `metric` examples: `pm25`, `pm10`, `no2`, `o3`, `temperature_c`
 
-## 4. Import OpenAQ Data
+---
 
-Use a sensor ID from OpenAQ and import records:
+## 4) Data import and generation scripts
+
+### 4.1 Import PM2.5 from OpenAQ
 
 ```bash
 python scripts/import_openaq.py --sensor-id 1234 --city London --country UK --pollutant pm25 --limit 200
 ```
 
-OpenAQ docs: <https://docs.openaq.org/>
+OpenAQ documentation: <https://docs.openaq.org/>
 
-### 4.1 (Optional) Find sensor_id for a London monitoring station
-
-OpenAQ provides sensors under a `locations_id` (from the Explorer URL).
+### 4.2 Import weather data from Open-Meteo
 
 ```bash
-python scripts/list_openaq_sensors.py --locations-id 225715 --parameter pm2.5
+python scripts/import_open_meteo.py --city-id 1 --start-date 2023-07-01 --end-date 2023-12-31
 ```
 
-Pick the `sensor_id` that corresponds to `pm2.5`, then use it with `import_openaq.py`.
+### 4.3 Generate missing H2 2023 dataset (project-specific)
 
-## 4.2 Import historical weather (temperature) data
-
-This project also supports historical hourly weather via Open-Meteo (no API key required).
-Make sure your city has latitude/longitude stored (create/update via `/cities`).
-
-Example (London city_id=1):
+To supplement data for five cities (London, Beijing, Paris, New York, Delhi) in the second half of 2023:
 
 ```bash
-python scripts/import_open_meteo.py --city-id 1 --start-date 2023-07-21 --end-date 2023-08-17
+python scripts/generate_h2_2023_data.py
 ```
 
-## 4.3 Trend endpoint examples
+This script fills missing hourly records for:
 
-- Daily trend for PM2.5:
-  - `GET /analytics/daily-trend?city_id=1&metric=pm25&start=2023-07-21T00:00:00Z&end=2023-08-17T23:59:59Z`
-- Daily trend for temperature:
-  - `GET /analytics/daily-trend?city_id=1&metric=temperature_c&start=2023-07-21T00:00:00Z&end=2023-08-17T23:59:59Z`
+- `pm25` in `measurements`
+- `temperature_c` in `weather_measurements`
+- Date range: `2023-07-01 00:00:00` to `2023-12-31 23:00:00`
 
+---
 
+## 5) Quick verification
+
+### 5.1 Verify login protection
+
+- Open `http://127.0.0.1:8000/` in a private/incognito browser window.
+- Expect redirect to `/login` if not authenticated.
+
+### 5.2 Verify full-year data coverage for target cities
+
+Run:
+
+```bash
+python -c "import sqlite3; con=sqlite3.connect('air_quality.db'); cur=con.cursor(); print('PM25 max by city:'); [print(r) for r in cur.execute(\"\"\"select c.name,max(m.datetime_utc) from measurements m join cities c on c.id=m.city_id where c.id in (1,2,3,4,5) and lower(m.pollutant)='pm25' group by c.id,c.name order by c.id\"\"\")]; print('Temp max by city:'); [print(r) for r in cur.execute(\"\"\"select c.name,max(w.datetime_utc) from weather_measurements w join cities c on c.id=w.city_id where c.id in (1,2,3,4,5) and w.temperature_c is not null group by c.id,c.name order by c.id\"\"\")]; con.close()"
+```
+
+Expected max timestamp for all five cities: `2023-12-31 23:00:00...`
+
+---
+
+## 6) Deliverables
+
+- Code repository (this project)
+- API documentation source: [`docs/api-documentation.md`](docs/api-documentation.md)
+- Technical report (editable + final PDF):
+  - [`docs/XJCO3011_Technical_Report.docx`](docs/XJCO3011_Technical_Report.docx)
+  - [`docs/XJCO3011_Technical_Report.pdf`](docs/XJCO3011_Technical_Report.pdf)
