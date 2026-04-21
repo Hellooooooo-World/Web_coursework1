@@ -137,20 +137,4 @@ python scripts/import_open_meteo.py --city-id 1 --start-date 2023-07-21 --end-da
 - Daily trend for temperature:
   - `GET /analytics/daily-trend?city_id=1&metric=temperature_c&start=2023-07-21T00:00:00Z&end=2023-08-17T23:59:59Z`
 
-## 5. Coursework Alignment Checklist
 
-- [x] Database-backed CRUD API
-- [x] At least four HTTP endpoints
-- [x] JSON responses and proper error codes
-- [x] Analytics endpoints beyond minimum requirements
-- [ ] External deployment
-- [ ] Technical report (max 5 pages)
-- [ ] API documentation PDF export
-- [ ] Presentation slides with deliverables mapping
-
-## 6. Suggested Next Steps
-
-1. Add authentication (API key or JWT).
-2. Add tests with pytest.
-3. Deploy to a public host (Render/Railway/PythonAnywhere).
-4. Export Swagger/OpenAPI docs to PDF for submission.
